@@ -30,7 +30,8 @@ def status(maximum=None,
     Return the current cpu usage stats
     '''
     # Monitoring state, no changes will be made so no test interface needed
-    ret = {'result': False,
+    ret = {'name': 'cpu_usage',
+           'result': False,
            'comment': '',
            'changes': {},
            'data': {}}
@@ -46,12 +47,13 @@ def status(maximum=None,
         ]
 
     info = __salt__['ps.cpu_percent']()
-    info = info[local]
+    log.info(info)
+    cap = 100
 
     status, level, threshold, result = check_thresholds(cap, thresholds)
 
     if threshold:
-        threshold = int(threshold)
+        threshold = float(threshold)
 
     warning = ''
     if result is False:
@@ -60,8 +62,7 @@ def status(maximum=None,
         elif level == 'low':
             warning = ' (below {0}% threshold)'.format(threshold)
 
-    message = ('CPU Usage is at {0}% ').format(name, cap,
-                                      warning)
+    message = ('CPU Usage is at {0}% ').format(cap, warning)
     ret['comment'] = '{0}'.format(status, message)
 
     data['message'] = message
@@ -70,9 +71,9 @@ def status(maximum=None,
     if level:
         data['threshold'] = [level, threshold]
 
-    data['info'] = {'usage': info}
+    data['info'] = {'cpu_precent': info}
 
-    data['metrics'] = {'usage': info}
+    data['metrics'] = {'cpu_precent': info}
     if url:
         data['url'] = url
 
