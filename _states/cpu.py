@@ -36,7 +36,8 @@ def status(maximum=None,
            'changes': {},
            'data': {}}
 
-    data = {'check': 'cpu.status'}
+    data = {'name': 'cpu_usage',
+	    'check': 'cpu.status'}
 
     if thresholds is None:
         thresholds = [
